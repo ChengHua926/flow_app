@@ -1,34 +1,48 @@
 // ignore_for_file: camel_case_types, unused_import
 
 import 'package:flow_app/main.dart';
+import 'package:flow_app/providers/game_code.dart';
 import 'package:flow_app/screen/image_card.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
-  // Future<void> uploadRandomNumberToFirebase(String randomNumber) async {
-  //   final databaseReference = FirebaseDatabase.instance.reference();
-  //   await databaseReference
-  //       .child('randomNumbers')
-  //       .push()
-  //       .set({'number': randomNumber});
-  // }
+Future<void> uploadRandomNumberToFirebase(int randomNumber) async {
+  // Use Firestore instance
+  final firestoreInstance = FirebaseFirestore.instance;
+  print(randomNumber);
 
-  // String generateRandomNumber() {
-  //   final random = Random();
-  //   final randomNumber = random.nextInt(900000) +
-  //       100000; // Generates a random number between 100000 and 999999
-    
-  //   //print(randomeNumber.toString());
+  // Reference to the specific game session document using the random number
+  final gameSessionDocRef = firestoreInstance.collection('game sessions').doc(randomNumber.toString());
 
-  //   return randomNumber.toString();
-  // }
+  // Set the game info for this game session
+  await gameSessionDocRef.set({
+    'imageUrl': '',  // You can update this with the actual imageUrl later
+    'audioUrl': '',  // You can update this with the actual audioUrl later
+  });
+
+  // Add a test player to the "players" sub-collection (you can modify this part as per your requirements)
+  await gameSessionDocRef.collection('players').add({
+    'playerName': 'test user',
+  });
+}
+
+  int generateRandomNumber() {
+    final random = Random();
+    final randomNumber = random.nextInt(900000) +
+        100000; // Generates a random number between 100000 and 999999
+
+    //print(randomeNumber.toString());
+    return randomNumber;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +72,12 @@ class StartPage extends StatelessWidget {
                   elevation: 5.0,
                 ),
                 onPressed: () async {
-                  // final randomNumber = generateRandomNumber();
-                  // await uploadRandomNumberToFirebase(randomNumber);
+                  final randomNumber = generateRandomNumber();
+                  await uploadRandomNumberToFirebase(randomNumber);
+                  final gameCodeProvider =
+                      Provider.of<GameCodeProvider>(context, listen: false);
+                  gameCodeProvider.updateCode(randomNumber.toString());
+                  print("provider game code: " + gameCodeProvider.code);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
@@ -69,7 +87,8 @@ class StartPage extends StatelessWidget {
                 },
                 child: const Text('Create'),
               ),
-              const SizedBox(height: 20), // Provides some spacing between the buttons
+              const SizedBox(
+                  height: 20), // Provides some spacing between the buttons
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

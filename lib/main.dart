@@ -1,3 +1,5 @@
+import 'package:flow_app/screen/login.dart';
+
 import 'screen/session_page.dart';
 
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'providers/firebase.dart'; // Make sure this import path is correct
 import 'package:provider/provider.dart';
+import 'providers/game_code.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AudioURLProvider()),
         ChangeNotifierProvider(create: (context) => ImageURLProvider()),
         ChangeNotifierProvider(create: (context) => PromptProvider()),
+        ChangeNotifierProvider(create: (context) => GameCodeProvider()),
         // ... other providers
       ],
       child: MyApp(),
@@ -31,7 +35,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Poppins',
       ),
-      home: SessionsGridPage(),
+      home: StartPage(),
     );
   }
 }
