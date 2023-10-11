@@ -12,6 +12,7 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
@@ -25,8 +26,8 @@ Future<void> uploadRandomNumberToFirebase(int randomNumber) async {
 
   // Set the game info for this game session
   await gameSessionDocRef.set({
-    'imageUrl': '',  // You can update this with the actual imageUrl later
-    'audioUrl': '',  // You can update this with the actual audioUrl later
+    'image url': '',  // You can update this with the actual imageUrl later
+    'audio url': '',  // You can update this with the actual audioUrl later
   });
 
   // Add a test player to the "players" sub-collection (you can modify this part as per your requirements)

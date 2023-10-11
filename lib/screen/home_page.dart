@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flow_app/providers/game_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 //import 'package:webview_flutter/webview_flutter.dart';
@@ -19,6 +20,7 @@ import 'voice_guidance.dart';
 import 'login.dart';
 import '../providers/firebase.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -36,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isLoading = false;
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<String> hintTags = [
     "sunset",
@@ -45,9 +48,25 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   bool _isTextFieldEnabled = true;
 
+  Future<void> uploadImageUrlToGameSession(
+      String imageUrl, String gamecode) async {
+    // Assuming you have an instance of GameCodeProvider available
+    // final gameCodeProvider =
+    //     GameCodeProvider(); // You might need to get this differently, e.g., via a Provider.of<GameCodeProvider>(context) call
+    // final gameCode = gameCodeProvider.code;
+
+    // Reference to the specific game session document
+    final docRef = _firestore.collection('game sessions').doc(gamecode);
+
+    // Update the 'image url' field with the provided imageUrl
+    await docRef.update({
+      'image url': imageUrl,
+    });
+
+    print("image url added to firestore");
+  }
+
   Future<String> fetchImageFromAPI(String prompt) async {
-
-
     const url =
         "https://6cac3gr7opzffdhsul272khe6y0bvhaf.lambda-url.eu-west-2.on.aws/";
     final response = await http.post(
@@ -250,7 +269,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                     listen: false);
 
                             imageURLProvider.updateURL(firebaseUrl);
-
+                            final gamecCodeProvider =
+                                Provider.of<GameCodeProvider>(context,
+                                    listen: false);
+                            uploadImageUrlToGameSession(
+                                firebaseUrl, gamecCodeProvider.code);
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
                                   GuidancePage(), // Use the Firebase URL here
