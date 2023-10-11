@@ -4,6 +4,7 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flow_app/providers/firebase.dart';
+import 'package:flow_app/providers/game_code.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -40,9 +41,10 @@ class _GuidancePageState extends State<GuidancePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
   late OpenAI openAI;
   bool _isLoading = false; // Add this line to track the loading state
-   bool _isTextFieldEnabled = true;
+  bool _isTextFieldEnabled = true;
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //ChatCTResponse? mResponse;
   @override
@@ -54,6 +56,24 @@ class _GuidancePageState extends State<GuidancePage> {
     );
     jplayer = AudioPlayer();
     super.initState();
+  }
+
+  Future<void> uploadAudioUrlToGameSession(
+      String audioUrl, String gamecode) async {
+    // Assuming you have an instance of GameCodeProvider available
+    // final gameCodeProvider =
+    //     GameCodeProvider(); // You might need to get this differently, e.g., via a Provider.of<GameCodeProvider>(context) call
+    // final gameCode = gameCodeProvider.code;
+
+    // Reference to the specific game session document
+    final docRef = _firestore.collection('game sessions').doc(gamecode);
+
+    // Update the 'image url' field with the provided imageUrl
+    await docRef.update({
+      'audio url': audioUrl,
+    });
+
+    print("audio url added to firestore");
   }
 
   Future<void> _addSession(BuildContext context) async {
@@ -185,7 +205,7 @@ class _GuidancePageState extends State<GuidancePage> {
     // Define the voice selection
     final voice = tts.VoiceSelectionParams(
       languageCode: 'en-US',
-      name: 'en-US-Neural2-$voice_sel', 
+      name: 'en-US-Neural2-$voice_sel',
       ssmlGender: 'FEMALE',
     );
 
@@ -248,7 +268,8 @@ class _GuidancePageState extends State<GuidancePage> {
                   children: hintTags.map((tag) {
                     return InkWell(
                       onTap: () {
-                        _controller.text += "$tag, "; // update the text box with the clicked tag
+                        _controller.text +=
+                            "$tag, "; // update the text box with the clicked tag
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -372,7 +393,12 @@ class _GuidancePageState extends State<GuidancePage> {
                               Provider.of<AudioURLProvider>(context,
                                   listen: false);
                           audioURLProvider.updateURL(url);
-                          _addSession(context);
+                          // _addSession(context);
+                          final gamecCodeProvider =
+                              Provider.of<GameCodeProvider>(context,
+                                  listen: false);
+                          uploadAudioUrlToGameSession(
+                              url, gamecCodeProvider.code);
                           // context.read<AudioURLProvider>().updateURL(url);
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => WebViewPage(),
@@ -416,7 +442,8 @@ class VoiceOption extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const VoiceOption({super.key, 
+  const VoiceOption({
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
