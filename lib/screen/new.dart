@@ -4,27 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:just_audio/just_audio.dart';
 
-class CodePage extends StatefulWidget {
-  @override
-  _CodePageState createState() => _CodePageState();
-}
-
-class _CodePageState extends State<CodePage> {
-  bool isUrlSet = false;
-
-  final AudioPlayer jplayer = AudioPlayer();
-  bool isPlaying = false;
-
-  @override
-  void dispose() {
-    jplayer.dispose();
-    super.dispose();
-  }
-
+class CodePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the game code from the provider
     final gameCode = Provider.of<GameCodeProvider>(context).code;
+    final AudioPlayer jplayer = AudioPlayer(); // Create a player
 
     return Scaffold(
       body: Container(
@@ -41,7 +26,7 @@ class _CodePageState extends State<CodePage> {
               padding: const EdgeInsets.only(top: 120.0, bottom: 30.0),
               child: Text(
                 "Game Code: $gameCode",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -83,13 +68,13 @@ class _CodePageState extends State<CodePage> {
                                 color: Colors.black.withOpacity(0.1),
                                 spreadRadius: 1,
                                 blurRadius: 3,
-                                offset: const Offset(0, 2),
+                                offset: Offset(0, 2),
                               ),
                             ],
                           ),
                           child: Text(
                             playerName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -100,44 +85,7 @@ class _CodePageState extends State<CodePage> {
                     },
                   );
                 },
-                // ... (rest of your StreamBuilder code)
               ),
-            ),
-            StreamBuilder<Duration>(
-              stream: jplayer.durationStream
-                  .map((event) => event ?? Duration.zero), // Handle null values
-              builder: (context, durationSnapshot) {
-                final duration = durationSnapshot.data ?? Duration.zero;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${duration.inMinutes}:${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}", // Formatting the duration to MM:SS format
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            StreamBuilder<Duration>(
-              stream: jplayer.positionStream,
-              builder: (context, snapshot) {
-                final position = snapshot.data ?? Duration.zero;
-                return Slider(
-                  onChanged: (newValue) {
-                    jplayer.seek(Duration(milliseconds: newValue.toInt()));
-                  },
-                  value: position.inMilliseconds.toDouble(),
-                  max: jplayer.duration?.inMilliseconds.toDouble() ?? 100.0,
-                );
-              },
             ),
             Padding(
               padding: const EdgeInsets.all(30.0),
@@ -145,41 +93,33 @@ class _CodePageState extends State<CodePage> {
                 children: [
                   FloatingActionButton(
                     onPressed: () async {
-                      if (!isPlaying) {
-                        // Check if the URL has been set already
-                        if (!isUrlSet) {
-                          // Fetch the audioUrl from Firestore
-                          DocumentSnapshot gameSession = await FirebaseFirestore
-                              .instance
-                              .collection('game sessions')
-                              .doc(gameCode)
-                              .get();
+                      // Get the game code from the provider
+                      final gameCode =
+                          Provider.of<GameCodeProvider>(context, listen: false)
+                              .code;
 
-                          String? audioUrl = (gameSession.data()
-                              as Map<String, dynamic>)['audio url'];
+                      // Fetch the audioUrl from Firestore
+                      DocumentSnapshot gameSession = await FirebaseFirestore
+                          .instance
+                          .collection('game sessions')
+                          .doc(gameCode)
+                          .get();
 
-                          if (audioUrl != null && audioUrl.isNotEmpty) {
-                            await jplayer.setUrl(audioUrl);
-                            isUrlSet =
-                                true; // Set the flag to true after setting the URL
-                          } else {
-                            print("Audio URL not found or is empty");
-                            return;
-                          }
-                        }
+                      String? audioUrl = (gameSession.data()
+                          as Map<String, dynamic>)['audio url'];
+
+                      if (audioUrl != null && audioUrl.isNotEmpty) {
+                        final duration = await jplayer.setUrl(audioUrl);
                         jplayer.play();
                       } else {
-                        jplayer.pause();
+                        print("Audio URL not found or is empty");
                       }
-                      setState(() {
-                        isPlaying = !isPlaying;
-                      });
                     },
+                    child: Icon(Icons.play_arrow),
                     backgroundColor: Colors.black,
-                    child: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10),
+                  Text(
                     "Play",
                     style: TextStyle(
                       fontSize: 18,
