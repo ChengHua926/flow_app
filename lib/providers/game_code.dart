@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class GameCodeProvider with ChangeNotifier {
-  late String _code;
+  String _code = "123456";
 
   String get code => _code;
 

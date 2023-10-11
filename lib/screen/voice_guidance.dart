@@ -393,7 +393,7 @@ class _GuidancePageState extends State<GuidancePage> {
                               Provider.of<AudioURLProvider>(context,
                                   listen: false);
                           audioURLProvider.updateURL(url);
-                          // _addSession(context);
+                          _addSession(context);
                           final gamecCodeProvider =
                               Provider.of<GameCodeProvider>(context,
                                   listen: false);

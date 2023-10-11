@@ -30,11 +30,12 @@ Future<void> uploadRandomNumberToFirebase(int randomNumber) async {
     'audio url': '',  // You can update this with the actual audioUrl later
   });
 
-  // Add a test player to the "players" sub-collection (you can modify this part as per your requirements)
-  await gameSessionDocRef.collection('players').add({
-    'playerName': 'test user',
+  // Add "test user" directly as a document under the "players" sub-collection
+  await gameSessionDocRef.collection('players').doc('test user').set({
+    'joinedAt': DateTime.now(),  // Example field, you can add more fields as needed
   });
 }
+
 
   int generateRandomNumber() {
     final random = Random();

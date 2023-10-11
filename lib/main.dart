@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'providers/firebase.dart'; // Make sure this import path is correct
 import 'package:provider/provider.dart';
 import 'providers/game_code.dart';
+import './screen/code_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
