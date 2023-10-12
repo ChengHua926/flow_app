@@ -36,7 +36,7 @@ class _UserNamePageState extends State<UserNamePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextField(
                   controller: _userNameController,
-                  keyboardType: TextInputType.number,
+                  //keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     // Add this style property
