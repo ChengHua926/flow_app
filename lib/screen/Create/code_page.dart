@@ -221,14 +221,14 @@ class _CodePageState extends State<CodePage> {
                             isPlayingValue ? Icons.pause : Icons.play_arrow),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        "Play",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      // const Text(
+                      //   "Play",
+                      //   style: TextStyle(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.bold,
+                      //     color: Colors.black,
+                      //   ),
+                      // ),
                     ],
                   ),
                 );

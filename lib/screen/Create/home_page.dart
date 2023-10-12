@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "sunset",
     "lake",
     "forest",
-    "lavender",
+    "peace",
   ];
   bool _isTextFieldEnabled = true;
 

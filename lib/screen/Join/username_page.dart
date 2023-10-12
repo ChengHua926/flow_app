@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flow_app/providers/game_code.dart';
 import 'package:flow_app/screen/Join/webview_page.dart';
 import 'package:flutter/material.dart';
@@ -80,15 +81,34 @@ class _UserNamePageState extends State<UserNamePage> {
                       .doc(_userNameController.text)
                       .set({});
 
-                  //navigate to webview page
+                  // Fetch the image URL from Firestore based on the game code
+                  DocumentSnapshot gameSessionDoc = await _firestore
+                      .collection('game sessions')
+                      .doc(gameCode)
+                      .get();
+
+                  if (gameSessionDoc.exists &&
+                      gameSessionDoc.data() is Map<String, dynamic>) {
+                    print("exists");
+                    Map<String, dynamic> data =
+                        gameSessionDoc.data() as Map<String, dynamic>;
+                    String imageUrl = data["image url"] ?? "";
+
+                    if (imageUrl.isNotEmpty) {
+                      // Set the fetched image URL as the "latestImageUrl" in Firebase Realtime Database
+                      final dbRef = FirebaseDatabase.instance
+                          .reference(); // Import the necessary package for this
+                      await dbRef.child("latestImageUrl").set(imageUrl);
+                      print("latest Image URL set successfully");
+                    }
+                  }
+
+                  // Navigate to webview page
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) =>
-                          const WebViewPage(), // Use the Firebase URL here
+                      builder: (context) => const WebViewPage(),
                     ),
                   );
-
-                  // Optional: Navigate to another page or show a confirmation message
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
