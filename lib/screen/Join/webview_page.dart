@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, unused_local_variable, avoid_print, use_build_context_synchronously, sort_child_properties_last
 
+import 'package:flow_app/providers/game_code.dart';
 import 'package:flow_app/screen/login.dart';
 import 'package:flow_app/screen/session_page.dart';
 import 'package:flutter/material.dart';
@@ -18,39 +19,31 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  late final AudioPlayer jplayer; // Create a player
+  WebViewController? _controller;
+
+  //late final AudioPlayer jplayer; // Create a player
 
   @override
   void initState() {
     super.initState();
-    jplayer = AudioPlayer();
-
-    // Create a delay, then execute your asynchronous code
-    Future.delayed(const Duration(seconds: 10), () async {
-      final audioURLProvider =
-          Provider.of<AudioURLProvider>(context, listen: false);
-      try {
-        final duration = await jplayer.setUrl(audioURLProvider.audioURL);
-        jplayer.play();
-      } catch (e) {
-        print('Failed to play audio: $e');
-      }
-    });
   }
 
   @override
   void dispose() {
-    jplayer.dispose();
+    //jplayer.dispose();
     super.dispose();
   }
 
   Future<bool> _onWillPop() async {
-    await jplayer.stop();
+    //await jplayer.stop();
     return true; // Allow the pop action to continue
   }
 
   @override
   Widget build(BuildContext context) {
+    final joinGameCodeProvider =
+        Provider.of<JoinGameCodeProvider>(context, listen: false);
+    final gameCode = joinGameCodeProvider.code;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -66,6 +59,22 @@ class _WebViewPageState extends State<WebViewPage> {
             }
           },
           child: WebView(
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller = webViewController;
+            },
+            javascriptChannels: {
+              JavascriptChannel(
+                name: 'flutterApp',
+                onMessageReceived: (JavascriptMessage message) {
+                  // Handle messages received from JavaScript here, if needed
+                },
+              ),
+            },
+            onPageFinished: (String url) {
+              // Send the game code to the WebView when the page finishes loading
+              _controller
+                  ?.evaluateJavascript('flutterApp.postMessage("$gameCode");');
+            },
             initialUrl: 'https://flow-43f6c.web.app/',
             javascriptMode: JavascriptMode.unrestricted,
             navigationDelegate: (NavigationRequest request) {
@@ -78,10 +87,10 @@ class _WebViewPageState extends State<WebViewPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await jplayer.stop();
+            //await jplayer.stop();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SessionsGridPage()),
+              MaterialPageRoute(builder: (context) => const StartPage()),
             );
           },
           child: const Icon(Icons.arrow_back, color: Colors.white),

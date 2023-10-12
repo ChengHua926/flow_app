@@ -1,4 +1,8 @@
+import 'package:flow_app/providers/game_code.dart';
+import 'package:flow_app/screen/Join/webview_page.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class UserNamePage extends StatefulWidget {
   @override
@@ -7,9 +11,14 @@ class UserNamePage extends StatefulWidget {
 
 class _UserNamePageState extends State<UserNamePage> {
   final TextEditingController _userNameController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    // Access the JoinGameCodeProvider
+    final joinGameCodeProvider =
+        Provider.of<JoinGameCodeProvider>(context, listen: false);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -53,9 +62,28 @@ class _UserNamePageState extends State<UserNamePage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // Handle the join button press here
-                  // For example, navigate to another page or validate the user name
+                onPressed: () async {
+                  // Get the game code from the provider
+                  String gameCode = joinGameCodeProvider.code;
+
+                  // Create a new document under the "players" sub-collection with the username
+                  await _firestore
+                      .collection('game sessions')
+                      .doc(gameCode)
+                      .collection('players')
+                      .doc(_userNameController.text)
+                      .set({});
+
+
+                    //navigate to webview page
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            WebViewPage(), // Use the Firebase URL here
+                      ),
+                    );
+
+                  // Optional: Navigate to another page or show a confirmation message
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
