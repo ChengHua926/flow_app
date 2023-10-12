@@ -36,7 +36,13 @@ class _UserNamePageState extends State<UserNamePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextField(
                   controller: _userNameController,
+                  keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    // Add this style property
+                    fontSize: 20, // Adjust the font size as needed
+                    fontWeight: FontWeight.bold,
+                  ),
                   decoration: InputDecoration(
                     border: const UnderlineInputBorder(),
                     enabledBorder: UnderlineInputBorder(
@@ -51,7 +57,7 @@ class _UserNamePageState extends State<UserNamePage> {
                         width: 2.0,
                       ),
                     ),
-                    hintText: 'User Name',
+                    hintText: 'USERNAME',
                     hintStyle: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -74,14 +80,13 @@ class _UserNamePageState extends State<UserNamePage> {
                       .doc(_userNameController.text)
                       .set({});
 
-
-                    //navigate to webview page
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            WebViewPage(), // Use the Firebase URL here
-                      ),
-                    );
+                  //navigate to webview page
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const WebViewPage(), // Use the Firebase URL here
+                    ),
+                  );
 
                   // Optional: Navigate to another page or show a confirmation message
                 },

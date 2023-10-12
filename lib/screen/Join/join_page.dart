@@ -32,6 +32,11 @@ class _JoinPageState extends State<JoinPage> {
                   controller: _gameCodeController,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    // Add this style property
+                    fontSize: 20, // Adjust the font size as needed
+                    fontWeight: FontWeight.bold,
+                  ),
                   decoration: InputDecoration(
                     border: const UnderlineInputBorder(),
                     enabledBorder: UnderlineInputBorder(
