@@ -12,30 +12,35 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
-Future<void> uploadRandomNumberToFirebase(int randomNumber) async {
-  // Use Firestore instance
-  final firestoreInstance = FirebaseFirestore.instance;
-  print(randomNumber);
+  Future<void> uploadRandomNumberToFirebase(int randomNumber) async {
+    // Use Firestore instance
+    final firestoreInstance = FirebaseFirestore.instance;
+    print(randomNumber);
 
-  // Reference to the specific game session document using the random number
-  final gameSessionDocRef = firestoreInstance.collection('game sessions').doc(randomNumber.toString());
+    // Reference to the specific game session document using the random number
+    final gameSessionDocRef = firestoreInstance
+        .collection('game sessions')
+        .doc(randomNumber.toString());
 
-  // Set the game info for this game session
-  await gameSessionDocRef.set({
-    'image url': '',  // You can update this with the actual imageUrl later
-    'audio url': '',  // You can update this with the actual audioUrl later
-  });
+    // Set the game info for this game session
+    await gameSessionDocRef.set({
+      'image url': '', // You can update this with the actual imageUrl later
+      'audio url': '', // You can update this with the actual audioUrl later
+    });
 
-  // Add "test user" directly as a document under the "players" sub-collection
-  await gameSessionDocRef.collection('players').doc('test user').set({
-    'joinedAt': DateTime.now(),  // Example field, you can add more fields as needed
-  });
-}
+    // Add a placeholder document to the "players" sub-collection
+    final placeholderDocRef =
+        gameSessionDocRef.collection('players').doc('placeholder');
+    await placeholderDocRef.set({
+      'placeholder': true, // This is just a dummy field
+    });
 
+    // Immediately delete the placeholder document
+    await placeholderDocRef.delete();
+  }
 
   int generateRandomNumber() {
     final random = Random();

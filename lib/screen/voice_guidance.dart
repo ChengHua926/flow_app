@@ -5,6 +5,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flow_app/providers/firebase.dart';
 import 'package:flow_app/providers/game_code.dart';
+import 'package:flow_app/screen/code_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -401,8 +402,8 @@ class _GuidancePageState extends State<GuidancePage> {
                               url, gamecCodeProvider.code);
                           // context.read<AudioURLProvider>().updateURL(url);
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => WebViewPage(),
-                            settings: const RouteSettings(name: "/webViewPage"),
+                            builder: (context) =>
+                                CodePage(), // Use the Firebase URL here
                           ));
 
                           setState(() {
