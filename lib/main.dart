@@ -8,7 +8,7 @@ import 'firebase_options.dart';
 import 'providers/firebase.dart'; // Make sure this import path is correct
 import 'package:provider/provider.dart';
 import 'providers/game_code.dart';
-import './screen/code_page.dart';
+import 'screen/Create/code_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +20,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ImageURLProvider()),
         ChangeNotifierProvider(create: (context) => PromptProvider()),
         ChangeNotifierProvider(create: (context) => GameCodeProvider()),
+        ChangeNotifierProvider(create: (context) => JoinGameCodeProvider()),
         // ... other providers
       ],
       child: MyApp(),

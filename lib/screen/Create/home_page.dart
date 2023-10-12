@@ -12,13 +12,13 @@ import 'package:path_provider/path_provider.dart';
 //import 'webview_page.dart';
 import 'package:image/image.dart' as img;
 import 'package:firebase_core/firebase_core.dart';
-import '../firebase_options.dart';
+import '../../firebase_options.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'voice_guidance.dart';
-import 'login.dart';
-import '../providers/firebase.dart';
+import '../login.dart';
+import '../../providers/firebase.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

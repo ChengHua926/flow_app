@@ -16,3 +16,20 @@ class GameCodeProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
+class JoinGameCodeProvider with ChangeNotifier {
+  String _joinCode = "";
+
+  String get code => _joinCode;
+
+  set code(String value) {
+    _joinCode = value;
+    notifyListeners();
+  }
+
+  void updateCode(String newCode) {
+    _joinCode = newCode;
+    notifyListeners();
+  }
+}
+

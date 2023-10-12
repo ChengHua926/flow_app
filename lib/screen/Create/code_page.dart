@@ -61,7 +61,7 @@ class _CodePageState extends State<CodePage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('No players found.'));
+                    return const Center(child: Text('No students has joined.'));
                   }
                   final players = snapshot.data!.docs;
 

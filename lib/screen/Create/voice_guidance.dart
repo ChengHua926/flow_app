@@ -5,7 +5,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flow_app/providers/firebase.dart';
 import 'package:flow_app/providers/game_code.dart';
-import 'package:flow_app/screen/code_page.dart';
+import 'package:flow_app/screen/Create/code_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -18,7 +18,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 //import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
-import 'webview_page.dart';
+import '../Join/webview_page.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

@@ -3,11 +3,12 @@
 import 'package:flow_app/main.dart';
 import 'package:flow_app/providers/game_code.dart';
 import 'package:flow_app/screen/image_card.dart';
+import 'package:flow_app/screen/Join/join_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'home_page.dart';
+import 'Create/home_page.dart';
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -112,11 +113,11 @@ class StartPage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
-                          ImageCardPage(), // Use the Firebase URL here
+                          JoinPage(), // Use the Firebase URL here
                     ),
                   );
                 },
-                child: const Text('History'),
+                child: const Text('Join'),
               ),
             ],
           ),

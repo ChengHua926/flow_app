@@ -8,7 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:async';
 
-import '../providers/firebase.dart';
+import '../../providers/firebase.dart';
 
 class WebViewPage extends StatefulWidget {
   const WebViewPage({super.key});
